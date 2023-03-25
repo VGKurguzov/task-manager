@@ -24,12 +24,7 @@ public class DutyController {
     @PreAuthorize("hasRole('ADMIN') || hasRole('USER')")
     @GetMapping("/getAll")
     public ResponseEntity<List<Duty>> getAllDuties() {
-        try {
-            List<Duty> duties = dutyService.getAll();
-            return new ResponseEntity<>(duties, duties.size() > 0 ? HttpStatus.OK : HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        List<Duty> duties = dutyService.getAll();
+        return new ResponseEntity<>(duties, duties.size() > 0 ? HttpStatus.OK : HttpStatus.NO_CONTENT);
     }
 }

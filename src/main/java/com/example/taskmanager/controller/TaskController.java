@@ -47,85 +47,60 @@ public class TaskController {
     @PreAuthorize("hasRole('ADMIN') || hasRole('USER')")
     @PostMapping("/")
     public ResponseEntity<TaskResponse> create(@Valid @RequestBody TaskRequest taskRequest) {
-        try {
-            User user = userService.getAuthUser();
-            final Project project = projectService.getById(taskRequest.projectId());
-            final Phase phase = phaseService.getById(taskRequest.phaseId());
-            final Duty duty = dutyService.getById(taskRequest.dutyId());
-            final Task newTask = TaskConverter.toModel(taskRequest, project, user, phase, duty, Instant.now().toEpochMilli());
-            final TaskResponse taskResponse = TaskConverter.toDto(taskService.save(newTask));
-            return new ResponseEntity<>(taskResponse, HttpStatus.CREATED);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        User user = userService.getAuthUser();
+        final Project project = projectService.getById(taskRequest.projectId());
+        final Phase phase = phaseService.getById(taskRequest.phaseId());
+        final Duty duty = dutyService.getById(taskRequest.dutyId());
+        final Task newTask = TaskConverter.toModel(taskRequest, project, user, phase, duty, Instant.now().toEpochMilli());
+        final TaskResponse taskResponse = TaskConverter.toDto(taskService.save(newTask));
+        return new ResponseEntity<>(taskResponse, HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasRole('ADMIN') || hasRole('USER')")
     @GetMapping("/{id}")
     public ResponseEntity<TaskResponse> getById(@PathVariable("id") Long id) {
-        try {
-            final Task task = taskService.getById(id);
-            final TaskResponse taskResponse = TaskConverter.toDto(task);
-            return new ResponseEntity<>(taskResponse, HttpStatus.OK);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        final Task task = taskService.getById(id);
+        final TaskResponse taskResponse = TaskConverter.toDto(task);
+        return new ResponseEntity<>(taskResponse, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN') || hasRole('USER')")
     @PutMapping("/updatePhase/{id}")
     public ResponseEntity<TaskResponse> updatePhase(@PathVariable("id") Long id,
                                                     @RequestBody TaskRequest taskRequest) {
-        try {
-            final Task currentTask = taskService.getById(id);
-            final Phase phase = phaseService.getById(taskRequest.phaseId());
-            currentTask.setPhase(phase);
-            currentTask.setModifiedDate(Instant.now().toEpochMilli());
-            final TaskResponse taskResponse = TaskConverter.toDto(taskService.update(currentTask));
-            return new ResponseEntity<>(taskResponse, HttpStatus.OK);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        final Task currentTask = taskService.getById(id);
+        final Phase phase = phaseService.getById(taskRequest.phaseId());
+        currentTask.setPhase(phase);
+        currentTask.setModifiedDate(Instant.now().toEpochMilli());
+        final TaskResponse taskResponse = TaskConverter.toDto(taskService.update(currentTask));
+        return new ResponseEntity<>(taskResponse, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<TaskResponse> update(@PathVariable("id") Long id,
                                                @RequestBody TaskRequest taskRequest) {
-        try {
-            final Task currentTask = taskService.getById(id);
-            final Project project = taskRequest.projectId() != null ? projectService
-                    .getById(taskRequest.projectId()) : null;
-            final Phase phase = taskRequest.phaseId() != null ? phaseService
-                    .getById(taskRequest.phaseId()) : null;
-            final Task updatedTask = taskService.update(TaskConverter.merge(taskRequest, currentTask, project, phase));
-            final TaskResponse taskResponse = TaskConverter.toDto(updatedTask);
-            return new ResponseEntity<>(taskResponse, HttpStatus.OK);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        final Task currentTask = taskService.getById(id);
+        final Project project = taskRequest.projectId() != null ? projectService
+                .getById(taskRequest.projectId()) : null;
+        final Phase phase = taskRequest.phaseId() != null ? phaseService
+                .getById(taskRequest.phaseId()) : null;
+        final Task updatedTask = taskService.update(TaskConverter.merge(taskRequest, currentTask, project, phase));
+        final TaskResponse taskResponse = TaskConverter.toDto(updatedTask);
+        return new ResponseEntity<>(taskResponse, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN') || hasRole('USER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<TaskResponse> delete(@PathVariable("id") Long id) {
-        try {
-            User user = userService.getAuthUser();
-            final Task task = taskService.getById(id);
-            if ((Utils.isAuth(user, RoleEnum.ROLE_USER) && task.getOwner().getId().equals(user.getId()))
-                    || (Utils.isAuth(user, RoleEnum.ROLE_ADMIN))) {
-                taskService.delete(task.getId());
-                final TaskResponse taskResponse = TaskConverter.toDto(task);
-                return new ResponseEntity<>(taskResponse, HttpStatus.OK);
-            }
-            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        User user = userService.getAuthUser();
+        final Task task = taskService.getById(id);
+        if ((Utils.isAuth(user, RoleEnum.ROLE_USER) && task.getOwner().getId().equals(user.getId()))
+                || (Utils.isAuth(user, RoleEnum.ROLE_ADMIN))) {
+            taskService.delete(task.getId());
+            final TaskResponse taskResponse = TaskConverter.toDto(task);
+            return new ResponseEntity<>(taskResponse, HttpStatus.OK);
         }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 }

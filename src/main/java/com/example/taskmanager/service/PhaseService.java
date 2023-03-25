@@ -1,5 +1,6 @@
 package com.example.taskmanager.service;
 
+import com.example.taskmanager.exception.RecordNotFoundException;
 import com.example.taskmanager.model.Phase;
 import com.example.taskmanager.repository.PhaseRepository;
 import jakarta.transaction.Transactional;
@@ -26,6 +27,6 @@ public class PhaseService {
     public Phase getById(Long id) {
         return phaseRepository
                 .findById(id)
-                .orElseThrow(() -> new Exception(String.format(PHASE_NOT_EXIST, id)));
+                .orElseThrow(() -> new RecordNotFoundException(String.format(PHASE_NOT_EXIST, id)));
     }
 }

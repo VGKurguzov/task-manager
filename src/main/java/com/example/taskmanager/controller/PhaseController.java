@@ -24,12 +24,7 @@ public class PhaseController {
     @PreAuthorize("hasRole('ADMIN') || hasRole('USER')")
     @GetMapping("/getAll")
     public ResponseEntity<List<Phase>> getAllPhases() {
-        try {
-            List<Phase> phases = phaseService.getAllPhases();
-            return new ResponseEntity<>(phases, phases.size() > 0 ? HttpStatus.OK : HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        List<Phase> phases = phaseService.getAllPhases();
+        return new ResponseEntity<>(phases, phases.size() > 0 ? HttpStatus.OK : HttpStatus.NO_CONTENT);
     }
 }
