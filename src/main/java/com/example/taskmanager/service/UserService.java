@@ -1,5 +1,6 @@
 package com.example.taskmanager.service;
 
+import com.example.taskmanager.exception.RecordNotFoundException;
 import com.example.taskmanager.model.User;
 import com.example.taskmanager.model.UserDetailsImpl;
 import com.example.taskmanager.repository.UserRepository;
@@ -25,7 +26,7 @@ public class UserService {
     public User getByUsername(String username) {
         return userRepository
                 .findByUsername(username)
-                .orElseThrow(() -> new Exception(String.format(USER_NOT_FOUND, username)));
+                .orElseThrow(() -> new RecordNotFoundException(String.format(USER_NOT_FOUND, username)));
     }
 
     @SneakyThrows
@@ -36,7 +37,7 @@ public class UserService {
             final String username = ((UserDetailsImpl) authentication.getPrincipal()).getUsername();
             return userRepository
                     .findByUsername(username)
-                    .orElseThrow(() -> new Exception(String.format(USER_NOT_FOUND, username)));
+                    .orElseThrow(() -> new RecordNotFoundException(String.format(USER_NOT_FOUND, username)));
         }
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }

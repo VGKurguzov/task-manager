@@ -1,13 +1,12 @@
 package com.example.taskmanager.service;
 
+import com.example.taskmanager.exception.RecordNotFoundException;
 import com.example.taskmanager.model.Task;
 import com.example.taskmanager.repository.TaskRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -34,8 +33,7 @@ public class TaskService {
     public Task getById(Long id) {
         return taskRepository
                 .findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        String.format(TASK_NOT_EXIST, id)));
+                .orElseThrow(() -> new RecordNotFoundException(String.format(TASK_NOT_EXIST, id)));
     }
 
     @Transactional

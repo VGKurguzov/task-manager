@@ -1,5 +1,6 @@
 package com.example.taskmanager.service;
 
+import com.example.taskmanager.exception.RecordNotFoundException;
 import com.example.taskmanager.model.Duty;
 import com.example.taskmanager.repository.DutyRepository;
 import jakarta.transaction.Transactional;
@@ -27,6 +28,6 @@ public class DutyService {
     public Duty getById(Long id) {
         return dutyRepository
                 .findById(id)
-                .orElseThrow(() -> new Exception(String.format(DUTY_NOT_EXIST, id)));
+                .orElseThrow(() -> new RecordNotFoundException(String.format(DUTY_NOT_EXIST, id)));
     }
 }

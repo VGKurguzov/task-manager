@@ -1,6 +1,7 @@
 package com.example.taskmanager.service;
 
 import com.example.taskmanager.dto.ProjectRequest;
+import com.example.taskmanager.exception.RecordNotFoundException;
 import com.example.taskmanager.model.Project;
 import com.example.taskmanager.repository.ProjectRepository;
 import jakarta.transaction.Transactional;
@@ -42,7 +43,7 @@ public class ProjectService {
         }
         return newParentId != null ? projectRepository
                 .findById(newParentId)
-                .orElseThrow(() -> new Exception(String.format(PROJECT_NOT_EXIST,
+                .orElseThrow(() -> new RecordNotFoundException(String.format(PROJECT_NOT_EXIST,
                         newParentId))) : null;
     }
 
@@ -78,7 +79,7 @@ public class ProjectService {
     public Project getById(Long id) {
         return projectRepository
                 .findById(id)
-                .orElseThrow(() -> new Exception(String.format(PROJECT_NOT_EXIST, id)));
+                .orElseThrow(() -> new RecordNotFoundException(String.format(PROJECT_NOT_EXIST, id)));
     }
 
     @Transactional
