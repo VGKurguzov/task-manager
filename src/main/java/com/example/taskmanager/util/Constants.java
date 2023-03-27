@@ -10,4 +10,17 @@ public final class Constants {
     public static final String PHASE_NOT_EXIST = "Phase with id = %s not exist";
     public static final String DUTY_NOT_EXIST = "Duty with id = %s not exist";
     public static final String USER_NOT_FOUND = "User not found with username: %s";
+
+    public static final String[] AUTH_WHITELIST = {
+            "/api/auth/**",
+            "/v2/api-docs",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**",
+            "/v3/api-docs/**",
+            "/swagger-ui/**"
+    };
 }
