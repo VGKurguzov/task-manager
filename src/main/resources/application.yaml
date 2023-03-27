@@ -7,7 +7,4 @@ spring:
     username: ${DATABASE_USERNAME:postgres}
     password: ${DATABASE_PASSWORD:postgres}
   jpa:
-    hibernate.ddl-auto: none
-  sql:
-    init:
-      mode: always
+    hibernate.ddl-auto: update
