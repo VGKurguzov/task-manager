@@ -1,5 +1,5 @@
 app:
-  jwtSecret: "Secret123Secret123Secret123Secret123Secret123Secret123Secret123"
+  jwtSecret: ${APP_JWT_SECRET:Secret123Secret123Secret123Secret123Secret123Secret123Secret123}
   jwtExpirationMs: 3600000
 spring:
   datasource:
