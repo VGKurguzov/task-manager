@@ -10,7 +10,7 @@ public class AuthConverter {
 
     @SneakyThrows
     public static LoginResponse toDto(String jwt, UserDetailsImpl userDetails) {
-        return new LoginResponse(jwt, userDetails.getId(), userDetails.getUsername(),
+        return new LoginResponse(jwt, userDetails.getUsername(),
                 userDetails.getAuthorities().stream()
                         .findFirst()
                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST)).toString());

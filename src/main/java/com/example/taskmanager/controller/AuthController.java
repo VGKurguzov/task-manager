@@ -4,8 +4,15 @@ import com.example.taskmanager.converter.AuthConverter;
 import com.example.taskmanager.dto.LoginRequest;
 import com.example.taskmanager.dto.LoginResponse;
 import com.example.taskmanager.dto.MessageResponse;
+import com.example.taskmanager.dto.error.ErrorDto;
 import com.example.taskmanager.model.UserDetailsImpl;
 import com.example.taskmanager.util.JwtUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +20,7 @@ import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,11 +34,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Auth", description = "Auth APIs")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
 
+    @Operation(
+            summary = "Login",
+            description = "Login")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {@Content
+                    (schema = @Schema(implementation = LoginResponse.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "204", content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "401", content = {@Content(schema = @Schema(implementation = ErrorDto.class))}),
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})})
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager
@@ -46,6 +64,15 @@ public class AuthController {
         return new ResponseEntity<>(loginResponse, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Logout",
+            description = "Logout")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {@Content
+                    (schema = @Schema(implementation = MessageResponse.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "204", content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "401", content = {@Content(schema = @Schema(implementation = ErrorDto.class))}),
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})})
     @SneakyThrows
     @PostMapping(value = "/logout")
     @PreAuthorize("hasRole('ADMIN') || hasRole('USER')")

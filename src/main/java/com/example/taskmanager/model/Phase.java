@@ -1,5 +1,6 @@
 package com.example.taskmanager.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,8 +16,10 @@ public class Phase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Phase ID", example = "3")
     private Long id;
 
     @Column
+    @Schema(description = "Project phase", example = "Done")
     private String phase;
 }

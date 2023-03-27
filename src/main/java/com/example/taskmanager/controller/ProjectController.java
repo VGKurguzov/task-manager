@@ -4,8 +4,16 @@ import com.example.taskmanager.converter.ProjectConverter;
 import com.example.taskmanager.dto.ProjectDto;
 import com.example.taskmanager.dto.ProjectRequest;
 import com.example.taskmanager.dto.ProjectResponse;
+import com.example.taskmanager.dto.error.ErrorDto;
 import com.example.taskmanager.model.Project;
 import com.example.taskmanager.service.ProjectService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,9 +34,21 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/projects")
+@Tag(name = "Project", description = "Project APIs")
+@SecurityRequirement(name = "Bearer Authentication")
 public class ProjectController {
     private final ProjectService projectService;
 
+    @Operation(
+            summary = "Create project",
+            description = "Create project")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", content = {
+                    @Content(schema = @Schema(implementation = ProjectResponse.class),
+                            mediaType = "application/json")}),
+            @ApiResponse(responseCode = "204", content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "401", content = {@Content(schema = @Schema(implementation = ErrorDto.class))}),
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})})
     @PostMapping("/")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ProjectResponse> create(@Valid @RequestBody ProjectRequest projectRequest) {
@@ -40,6 +60,16 @@ public class ProjectController {
         return new ResponseEntity<>(projectResponse, HttpStatus.CREATED);
     }
 
+    @Operation(
+            summary = "Get root",
+            description = "Get root projects")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(schema = @Schema(implementation = ProjectDto.class),
+                            mediaType = "application/json")}),
+            @ApiResponse(responseCode = "204", content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "401", content = {@Content(schema = @Schema(implementation = ErrorDto.class))}),
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})})
     @PreAuthorize("hasRole('ADMIN') || hasRole('USER')")
     @GetMapping("/root")
     public ResponseEntity<List<ProjectDto>> getRoot() {
@@ -48,6 +78,16 @@ public class ProjectController {
                 HttpStatus.OK : HttpStatus.NO_CONTENT);
     }
 
+    @Operation(
+            summary = "Get project by id",
+            description = "Get project by id")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(schema = @Schema(implementation = ProjectResponse.class),
+                            mediaType = "application/json")}),
+            @ApiResponse(responseCode = "204", content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "401", content = {@Content(schema = @Schema(implementation = ErrorDto.class))}),
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})})
     @PreAuthorize("hasRole('ADMIN') || hasRole('USER')")
     @GetMapping("/{id}")
     public ResponseEntity<ProjectResponse> getById(@PathVariable("id") Long id) {
@@ -57,6 +97,16 @@ public class ProjectController {
         return new ResponseEntity<>(projectResponse, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Update project by id",
+            description = "Update project by id")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(schema = @Schema(implementation = ProjectResponse.class),
+                            mediaType = "application/json")}),
+            @ApiResponse(responseCode = "204", content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "401", content = {@Content(schema = @Schema(implementation = ErrorDto.class))}),
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})})
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<ProjectResponse> update(@PathVariable("id") Long id,
@@ -68,6 +118,16 @@ public class ProjectController {
         return new ResponseEntity<>(projectResponse, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Delete project by id",
+            description = "Delete project by id")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(schema = @Schema(implementation = ProjectResponse.class),
+                            mediaType = "application/json")}),
+            @ApiResponse(responseCode = "204", content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "401", content = {@Content(schema = @Schema(implementation = ErrorDto.class))}),
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})})
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ProjectResponse> delete(@PathVariable("id") Long id) {

@@ -3,6 +3,7 @@ package com.example.taskmanager.controller;
 import com.example.taskmanager.converter.TaskConverter;
 import com.example.taskmanager.dto.TaskRequest;
 import com.example.taskmanager.dto.TaskResponse;
+import com.example.taskmanager.dto.error.ErrorDto;
 import com.example.taskmanager.model.Duty;
 import com.example.taskmanager.model.Phase;
 import com.example.taskmanager.model.Project;
@@ -15,6 +16,13 @@ import com.example.taskmanager.service.ProjectService;
 import com.example.taskmanager.service.TaskService;
 import com.example.taskmanager.service.UserService;
 import com.example.taskmanager.util.Utils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -36,6 +44,8 @@ import java.time.Instant;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/tasks")
+@Tag(name = "Task", description = "Task APIs")
+@SecurityRequirement(name = "Bearer Authentication")
 public class TaskController {
 
     private final TaskService taskService;
@@ -44,6 +54,15 @@ public class TaskController {
     private final DutyService dutyService;
     private final UserService userService;
 
+    @Operation(
+            summary = "Create task",
+            description = "Create task")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", content = {@Content
+                    (schema = @Schema(implementation = TaskResponse.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "204", content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "401", content = {@Content(schema = @Schema(implementation = ErrorDto.class))}),
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})})
     @PreAuthorize("hasRole('ADMIN') || hasRole('USER')")
     @PostMapping("/")
     public ResponseEntity<TaskResponse> create(@Valid @RequestBody TaskRequest taskRequest) {
@@ -56,6 +75,15 @@ public class TaskController {
         return new ResponseEntity<>(taskResponse, HttpStatus.CREATED);
     }
 
+    @Operation(
+            summary = "Get task by id",
+            description = "Get task by id")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {@Content
+                    (schema = @Schema(implementation = TaskResponse.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "204", content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "401", content = {@Content(schema = @Schema(implementation = ErrorDto.class))}),
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})})
     @PreAuthorize("hasRole('ADMIN') || hasRole('USER')")
     @GetMapping("/{id}")
     public ResponseEntity<TaskResponse> getById(@PathVariable("id") Long id) {
@@ -64,6 +92,15 @@ public class TaskController {
         return new ResponseEntity<>(taskResponse, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Update phase for task",
+            description = "Update task for phase")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {@Content
+                    (schema = @Schema(implementation = TaskResponse.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "204", content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "401", content = {@Content(schema = @Schema(implementation = ErrorDto.class))}),
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})})
     @PreAuthorize("hasRole('ADMIN') || hasRole('USER')")
     @PutMapping("/updatePhase/{id}")
     public ResponseEntity<TaskResponse> updatePhase(@PathVariable("id") Long id,
@@ -76,6 +113,15 @@ public class TaskController {
         return new ResponseEntity<>(taskResponse, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Update task by id",
+            description = "Update task by id")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {@Content
+                    (schema = @Schema(implementation = TaskResponse.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "204", content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "401", content = {@Content(schema = @Schema(implementation = ErrorDto.class))}),
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})})
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<TaskResponse> update(@PathVariable("id") Long id,
@@ -90,6 +136,15 @@ public class TaskController {
         return new ResponseEntity<>(taskResponse, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Delete task by id",
+            description = "Delete task by id")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {@Content
+                    (schema = @Schema(implementation = TaskResponse.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "204", content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "401", content = {@Content(schema = @Schema(implementation = ErrorDto.class))}),
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})})
     @PreAuthorize("hasRole('ADMIN') || hasRole('USER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<TaskResponse> delete(@PathVariable("id") Long id) {

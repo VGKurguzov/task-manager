@@ -24,12 +24,11 @@ public class ProjectConverter {
     public static ProjectResponse toDto(Project project, List<Project> subprojects) {
         return new ProjectResponse(project.getId(), project.getTitle(), modelReformat(subprojects),
                 TaskConverter.modelReformat(project.getTasks()),
-                project.getParentProject() != null ? project.getParentProject().getId() : null,
-                null);
+                project.getParentProject() != null ? project.getParentProject().getId() : null);
     }
 
     public static ProjectResponse toDto(Long id) {
-        return new ProjectResponse(id, null, null, null, null, null);
+        return new ProjectResponse(id, null, null, null, null);
     }
 
     public static Project toModel(String title, Project parentProject) {
