@@ -48,11 +48,8 @@ public class AuthController {
 
     @SneakyThrows
     @PostMapping(value = "/logout")
+    @PreAuthorize("hasRole('ADMIN') || hasRole('USER')")
     public ResponseEntity<MessageResponse> logout(HttpServletRequest request) {
-        if (request.getUserPrincipal() == null) {
-            return new ResponseEntity<>(new MessageResponse("User is not authorized"),
-                    HttpStatus.UNAUTHORIZED);
-        }
         try {
             request.logout();
         } catch (ServletException e) {
