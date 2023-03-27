@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS project
 CREATE TABLE IF NOT EXISTS task
 (
     id            IDENTITY,
-    title         VARCHAR(255) NOT NULL,
+    title         VARCHAR(128) NOT NULL,
     description   VARCHAR(1024),
     project_id    BIGINT       NOT NULL,
     owner_id      BIGINT       NOT NULL,
