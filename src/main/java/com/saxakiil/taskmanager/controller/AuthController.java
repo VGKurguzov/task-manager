@@ -4,8 +4,11 @@ import com.saxakiil.taskmanager.converter.AuthConverter;
 import com.saxakiil.taskmanager.dto.LoginRequest;
 import com.saxakiil.taskmanager.dto.LoginResponse;
 import com.saxakiil.taskmanager.dto.MessageResponse;
+import com.saxakiil.taskmanager.dto.RegisterRequest;
 import com.saxakiil.taskmanager.dto.error.ErrorDto;
 import com.saxakiil.taskmanager.model.UserDetailsImpl;
+import com.saxakiil.taskmanager.service.UserService;
+import com.saxakiil.taskmanager.util.Crypt;
 import com.saxakiil.taskmanager.util.JwtUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -39,7 +42,28 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
+    private final UserService userService;
     private final JwtUtils jwtUtils;
+    private final Crypt crypt;
+
+    @Operation(
+            summary = "Register",
+            description = "Register")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {@Content
+                    (schema = @Schema())}),
+            @ApiResponse(responseCode = "204", content = {@Content(schema = @Schema())}),
+            @ApiResponse(responseCode = "401", content = {@Content(schema = @Schema(implementation = ErrorDto.class))}),
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})})
+    @PostMapping("/register")
+    public ResponseEntity<ResponseEntity<?>> register(@Valid @RequestBody RegisterRequest registerRequest) {
+        if (!registerRequest.password().equals(registerRequest.passwordConfirm())) {
+            return ResponseEntity.badRequest().build();
+        }
+        userService.create(AuthConverter.toModel(registerRequest.username(), crypt.passwordEncoder()
+                .encode(registerRequest.password())));
+        return ResponseEntity.ok().build();
+    }
 
     @Operation(
             summary = "Login",

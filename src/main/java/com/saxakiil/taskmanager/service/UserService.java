@@ -21,6 +21,11 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    @Transactional
+    public User create(User user) {
+        return userRepository.save(user);
+    }
+
     @SneakyThrows
     @Transactional
     public User getByUsername(String username) {
