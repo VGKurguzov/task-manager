@@ -50,8 +50,7 @@ public class AuthController {
             summary = "Register",
             description = "Register")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {@Content
-                    (schema = @Schema())}),
+            @ApiResponse(responseCode = "200", content = {@Content(schema = @Schema())}),
             @ApiResponse(responseCode = "204", content = {@Content(schema = @Schema())}),
             @ApiResponse(responseCode = "401", content = {@Content(schema = @Schema(implementation = ErrorDto.class))}),
             @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema())})})
